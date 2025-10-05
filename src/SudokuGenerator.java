@@ -137,7 +137,6 @@ public final class SudokuGenerator {
             if (i == originalVal) continue;
             if (!board.isSafe(r, c, i)) continue;
 
-
             Board copy = new Board(board);
 
             copy.getCell(r, c).setValue(i);
