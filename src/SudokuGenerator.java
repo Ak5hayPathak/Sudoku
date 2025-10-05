@@ -82,7 +82,7 @@ public final class SudokuGenerator {
             int temp = board.getCell(r, c).getValue();
             board.getCell(r, c).setValue(0);
 
-            // Check if puzzle is still valid
+
             if (!checkRestrictions(board, difficulty) || !checkUniqueness(board, r, c, temp)) {
                 board.getCell(r, c).setValue(temp);
                 canBeDug[r][c] = false;  // prune
@@ -122,7 +122,7 @@ public final class SudokuGenerator {
                 if(board.getCell(j, i).getValue() != 0) colCount++;
             }
 
-            // Each row/column must meet its random minimum
+
             if (rowCount < minRowCol || colCount < minRowCol)
                 return false;
 
@@ -137,18 +137,18 @@ public final class SudokuGenerator {
             if (i == originalVal) continue;
             if (!board.isSafe(r, c, i)) continue;
 
-            // Work on a copy so original board is untouched
-            Board copy = new Board(board); // assumes you have a copy constructor
+
+            Board copy = new Board(board);
 
             copy.getCell(r, c).setValue(i);
 
-            // If solver finds a solution with this alternative, uniqueness is broken
+
             if (copy.solveSudoku()) {
                 return false;
             }
         }
 
-        return true; // only original value leads to a solution → unique
+        return true;
     }
 
     private static int getRandomTotalGivens(Difficulty difficulty) {
