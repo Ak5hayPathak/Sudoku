@@ -1,14 +1,9 @@
+import javax.swing.*;
+
 public class Main {
     public static void main(String[] args) {
+        SwingUtilities.invokeLater(SudokuFrame::new);
 
-
-        System.out.println("Difficulty: Evil");
-        Board b = SudokuGenerator.generate(SudokuGenerator.Difficulty.EVIL, SudokuGenerator.DiggingSequence.RANDOM);
-        b.printBoard();
-
-//        System.out.println("\nSolution");
-//        b.solveSudoku();
-//        b.printBoard();
-
+        //SudokuGenerator.generate(SudokuGenerator.Difficulty.EVIL, SudokuGenerator.DiggingSequence.RANDOM).printBoard();
     }
 }

@@ -17,18 +17,39 @@ public final class SudokuGenerator {
         EXTREMELY_EASY, EASY, MEDIUM, DIFFICULT, EVIL
     }
 
-    public static Board generate(Difficulty difficulty, DiggingSequence sequence){
-        Board board = digHoles(sequence, difficulty);
+    public static Board generate(Difficulty difficulty, DiggingSequence sequence) {
+        Board board = null;
+        long startTime = System.currentTimeMillis();
+        long timeLimit = 1000; // 1 second, adjust as needed
 
-        for(int i=0; i<SIZE; i++){
-            for(int j=0; j<SIZE; j++){
-                if(board.getCell(i, j).getValue() != 0)
-                    board.getCell(i, j).setFixed(true);
+        while (board == null) {
+            board = digHoles(sequence, difficulty);
+
+            if (board != null) {
+                boolean valid = true;
+
+                for (int i = 0; i < SIZE; i++) {
+                    for (int j = 0; j < SIZE; j++) {
+                        if (board.getCell(i, j).getValue() != 0)
+                            board.getCell(i, j).setFixed(true);
+                    }
+                }
+
+                // Optionally, check if board is valid; if not, retry
+                // valid = boardIsValid(board);
+                // if (!valid) board = null;
+            }
+
+            // Check time limit to prevent infinite loop
+            if (System.currentTimeMillis() - startTime > timeLimit) {
+                board = null; // reset to retry
+                startTime = System.currentTimeMillis(); // reset timer
             }
         }
 
         return board;
     }
+
 
     private static Board randomFill() {
         int row, col, val;
