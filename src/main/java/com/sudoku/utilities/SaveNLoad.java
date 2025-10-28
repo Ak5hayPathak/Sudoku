@@ -1,4 +1,4 @@
-package com.sudoku;
+package com.sudoku.utilities;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

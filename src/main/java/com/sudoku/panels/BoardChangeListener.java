@@ -1,4 +1,4 @@
-package com.sudoku;
+package com.sudoku.panels;
 
 interface BoardChangeListener {
     /**

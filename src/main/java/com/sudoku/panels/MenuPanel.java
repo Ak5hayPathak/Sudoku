@@ -1,5 +1,11 @@
-package com.sudoku;
+package com.sudoku.panels;
 
+import com.sudoku.buttons.DifficultyButton;
+import com.sudoku.buttons.OperationsButton;
+import com.sudoku.utilities.Board;
+import com.sudoku.utilities.Cell;
+import com.sudoku.utilities.SaveNLoad;
+import com.sudoku.utilities.SudokuGenerator;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -293,6 +299,8 @@ public class MenuPanel extends JPanel{
         for(int i=0; i<5; i++){
             if(Objects.equals(difficulties[i], difficulty)){
                 difficultyButtons[i].setActive(true);
+            }else{
+                difficultyButtons[i].setActive(false);
             }
         }
 

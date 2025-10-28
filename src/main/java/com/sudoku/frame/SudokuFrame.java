@@ -1,4 +1,10 @@
-package com.sudoku;
+package com.sudoku.frame;
+
+import com.sudoku.panels.BoardPanel;
+import com.sudoku.panels.LevelPanel;
+import com.sudoku.panels.MenuPanel;
+import com.sudoku.panels.OperatorsPanel;
+import com.sudoku.utilities.Board;
 
 import javax.swing.*;
 import java.awt.*;

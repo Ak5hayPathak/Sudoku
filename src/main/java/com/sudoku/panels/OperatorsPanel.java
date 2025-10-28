@@ -1,4 +1,9 @@
-package com.sudoku;
+package com.sudoku.panels;
+
+import com.sudoku.buttons.OperationsButton;
+import com.sudoku.utilities.Board;
+import com.sudoku.utilities.Cell;
+import com.sudoku.utilities.Move;
 
 import javax.swing.*;
 import java.awt.*;

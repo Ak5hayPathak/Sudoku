@@ -1,4 +1,4 @@
-package com.sudoku;
+package com.sudoku.buttons;
 
 import javax.swing.*;
 import java.awt.*;

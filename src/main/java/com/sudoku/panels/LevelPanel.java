@@ -1,4 +1,8 @@
-package com.sudoku;
+package com.sudoku.panels;
+
+import com.sudoku.utilities.Board;
+import com.sudoku.buttons.DifficultyButton;
+import com.sudoku.utilities.SudokuGenerator;
 
 import javax.swing.*;
 import java.awt.*;
