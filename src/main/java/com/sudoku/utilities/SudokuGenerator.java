@@ -20,36 +20,30 @@ public final class SudokuGenerator {
     }
 
     public static Board generate(Difficulty difficulty, DiggingSequence sequence) {
-        Board board = null;
-        long startTime = System.currentTimeMillis();
-        long timeLimit = 1000; // 1 second
+        final long timeLimit = 1000; // 1 second
+        final long startTime = System.currentTimeMillis();
 
-        while (board == null) {
-            board = digHoles(sequence, difficulty);
+        while (System.currentTimeMillis() - startTime < timeLimit) {
+            Board board = digHoles(sequence, difficulty);
 
             if (board != null) {
-                boolean valid = true;
-
+                // Mark fixed cells
                 for (int i = 0; i < SIZE; i++) {
                     for (int j = 0; j < SIZE; j++) {
-                        if (board.getCell(i, j).getValue() != 0)
+                        if (board.getCell(i, j).getValue() != 0) {
                             board.getCell(i, j).setFixed(true);
+                        }
                     }
                 }
 
+                return board; // success
             }
-
-            // Check time limit to prevent infinite loop
-            if (System.currentTimeMillis() - startTime > timeLimit) {
-                board = null; // reset to retry
-                startTime = System.currentTimeMillis(); // reset timer
-            }
-
         }
 
-        return board;
+        // If we reach here, generation failed within time limit
+        System.err.println("Failed to generate board within time limit.");
+        return null;
     }
-
 
     private static Board randomFill() {
         int row, col, val;
