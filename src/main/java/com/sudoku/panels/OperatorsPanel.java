@@ -149,6 +149,11 @@ public class OperatorsPanel extends JPanel{
 
         validateButton.addActionListener(e -> {
             if (!boardPanel.getBoard().isEmpty()) {
+
+                if(boardPanel.getBoard().isComplete()){
+                    showCompletionDialog();
+                    return;
+                }
                 boolean isValid = boardPanel.getBoard().isValid();
                 countValidations++;
 

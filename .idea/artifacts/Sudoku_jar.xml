@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Sudoku:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Sudoku_jar</output-path>
+    <root id="archive" name="Sudoku.jar">
+      <element id="module-output" name="Sudoku" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/org/json/json/20250517/json-20250517.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

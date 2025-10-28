@@ -240,7 +240,8 @@ public class MenuPanel extends JPanel{
 
 
                 restoreGame(gameData, boardPanel, levelPanel, timer);
-                timer.start();
+
+                if(!boardPanel.getBoard().isComplete()) timer.start();
 
             }
         });
@@ -305,6 +306,8 @@ public class MenuPanel extends JPanel{
         }
 
         setTime(timeElapsed);
+        timerLabel.setText(getFormattedTime());
+        timerLabel.repaint();
         OperatorsPanel.setCountHints(hints);
         OperatorsPanel.setCountValidations(validations);
         OperatorsPanel.setSolved(solvedHelp);
