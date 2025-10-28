@@ -7,6 +7,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 
 public class MenuPanel extends JPanel{
 
@@ -96,7 +97,7 @@ public class MenuPanel extends JPanel{
         restartButton = new OperationsButton(null, new Color(0xEBEBEB), new Color(0xDBDBDB), null, borderRadius, 1, "Restart", restartIcon, 24, 24, 14, 0, 0);
         newGameButton = new OperationsButton(null, new Color(0xEBEBEB), new Color(0xDBDBDB), null, borderRadius, 1, "New Game", newGameIcon, 24, 24, 14, 0, 1);
         loadButton = new OperationsButton(null, new Color(0xEBEBEB), new Color(0xDBDBDB), null, borderRadius, 1, "Load Game", loadIcon, 24, 24, 14, 0, 1);
-        saveButton = new OperationsButton(null, new Color(0xEBEBEB), new Color(0xDBDBDB), null, borderRadius, 1, "Save & Quit", saveIcon, 24, 24, 14, 0, 0);
+        saveButton = new OperationsButton(null, new Color(0xEBEBEB), new Color(0xDBDBDB), null, borderRadius, 1, "Save Game", saveIcon, 24, 24, 14, 0, 0);
 
         playButton.setBounds(20, 11, 45, 45);
         int xPosition = 330;
@@ -290,9 +291,8 @@ public class MenuPanel extends JPanel{
         difficulties = levelPanel.getDifficulties();
 
         for(int i=0; i<5; i++){
-            if(difficulties[i] == difficulty){
+            if(Objects.equals(difficulties[i], difficulty)){
                 difficultyButtons[i].setActive(true);
-                levelPanel.repaint();
             }
         }
 
@@ -300,8 +300,6 @@ public class MenuPanel extends JPanel{
         OperatorsPanel.setCountHints(hints);
         OperatorsPanel.setCountValidations(validations);
         OperatorsPanel.setSolved(solvedHelp);
-
-        operatorsPanel.repaint();
 
         JSONArray boardArray = gameData.getJSONArray("board");
         Board board = new Board();
@@ -327,7 +325,8 @@ public class MenuPanel extends JPanel{
         }
         boardPanel.setBoard(board);
         boardPanel.repaint();
-
+        levelPanel.repaint();
+        operatorsPanel.repaint();
     }
 
 
