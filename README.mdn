@@ -1,4 +1,4 @@
-# Sudoku Game (Java Swing)
+<h1> Sudoku Game (Java Swing) </h1>
 
 A fully functional **Sudoku game** built using **Java Swing**, featuring five difficulty levels, real-time validation, an undo/redo system, and the ability to save and load game progress in JSON format.  
 The project follows a modular, event-driven architecture with a clear separation between the **core logic**, **UI components**, and **data persistence** layers.
