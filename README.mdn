@@ -1,22 +1,97 @@
 # Sudoku Game (Java Swing)
 
-A fully functional **Sudoku game** built using **Java Swing**, featuring five difficulty levels, real-time validation, an undo/redo system, and the ability to save and load game progress in JSON format.
+A fully functional **Sudoku game** built using **Java Swing**, featuring five difficulty levels, real-time validation, an undo/redo system, and the ability to save and load game progress in JSON format.  
 The project follows a modular, event-driven architecture with a clear separation between the **core logic**, **UI components**, and **data persistence** layers.
 
 ---
 
 ## Features
 
-- **5 Difficulty Levels** — Generates Sudoku puzzles ranging from *Easy* to *Expert* using custom digging logic.
-- **Undo / Redo System** — Tracks user moves using the `Move` class to enable reversible actions.
-- **Dynamic Board Interaction** — Real-time updates and cell validation via event listeners.
-- **Save & Load Progress** — Stores and retrieves puzzles from JSON files for persistent gameplay.
-- **Custom Swing UI** — Structured panels (`BoardPanel`, `MenuPanel`, `LevelPanel`, etc.) ensure clean organization.
-- **Interactive Buttons** — Includes hover and click effects through custom button classes.
-- **Event-Driven Design** — Implements `BoardChangeListener` to synchronize logic and interface.
+- **5 Difficulty Levels** — Generates Sudoku puzzles ranging from *Easy* to *Expert* using custom digging logic.  
+- **Undo / Redo System** — Tracks user moves using the `Move` class to enable reversible actions.  
+- **Dynamic Board Interaction** — Real-time updates and cell validation via event listeners.  
+- **Save & Load Progress** — Stores and retrieves puzzles from JSON files for persistent gameplay.  
+- **Custom Swing UI** — Structured panels (`BoardPanel`, `MenuPanel`, `LevelPanel`, etc.) ensure clean organization.  
+- **Interactive Buttons** — Includes hover and click effects through custom button classes.  
+- **Event-Driven Design** — Implements `BoardChangeListener` to synchronize logic and interface.  
 - **Separation of Concerns** — Clear distinction between *game logic*, *UI elements*, and *I/O operations*.
 
 ---
 
 ## Project Structure
 
+com.sudoku
+│
+├── app/
+│ └── App.java
+│
+├── core/
+│ ├── Board.java
+│ ├── Cell.java
+│ ├── Move.java
+│ └── SudokuGenerator.java
+│
+├── panels/
+│ ├── BoardPanel.java
+│ ├── LevelPanel.java
+│ ├── MenuPanel.java
+│ └── OperatorsPanel.java
+│
+├── buttons/
+│ ├── DifficultyButton.java
+│ └── OperationsButton.java
+│
+├── io/
+│ └── SaveNLoad.java
+│
+├── listener/
+│ └── BoardChangeListener.java
+│
+└── frame/
+└── SudokuFrame.java
+
+
+---
+
+### `core/` — Game Logic Layer
+Defines the main data structures and algorithms that drive the Sudoku logic.
+
+- **`Cell`** – Represents a single cell in the Sudoku grid.
+- **`Board`** – Manages the 9×9 grid, rules, and interactions between cells.
+- **`Move`** – Tracks user actions for undo/redo operations.
+- **`SudokuGenerator`** – Creates Sudoku puzzles at different difficulty levels.
+
+---
+
+### `frame/` — Main Application Window
+- **`SudokuFrame`** – The central game window, managing layout and transitions between panels.
+
+---
+
+### `panels/` — UI Components
+Encapsulates modular Swing panels representing different parts of the user interface.
+
+- **`BoardPanel`** – Displays and manages the Sudoku grid.
+- **`LevelPanel`** – Handles difficulty selection.
+- **`MenuPanel`** – Main menu interface for starting or resuming games.
+- **`OperatorsPanel`** – Provides operational controls (undo, redo, hint, etc.).
+
+---
+
+### `buttons/` — Custom Buttons
+Contains reusable, styled button classes for consistent interaction design.
+
+- **`DifficultyButton`** – Buttons for selecting difficulty levels.
+- **`OperationsButton`** – Handles game-related actions like check, clear, or new puzzle.
+
+---
+
+### `io/` — Save & Load System
+- **`SaveNLoad`** – Handles serialization and deserialization of the game board in JSON format.
+
+---
+
+### `listener/` — Event Handling
+- **`BoardChangeListener`** – Custom interface to track board updates and trigger UI refreshes.
+
+---
