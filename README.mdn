@@ -20,3 +20,81 @@ The project follows a modular, event-driven architecture with a clear separation
 
 ## Project Structure
 
+com.sudoku
+│
+├── app/
+│ └── App.java
+│
+├── core/
+│ ├── Board.java
+│ ├── Cell.java
+│ ├── Move.java
+│ └── SudokuGenerator.java
+│
+├── panels/
+│ ├── BoardPanel.java
+│ ├── LevelPanel.java
+│ ├── MenuPanel.java
+│ └── OperatorsPanel.java
+│
+├── buttons/
+│ ├── DifficultyButton.java
+│ └── OperationsButton.java
+│
+├── io/
+│ └── SaveNLoad.java
+│
+├── listener/
+│ └── BoardChangeListener.java
+│
+└── frame/
+└── SudokuFrame.java
+
+
+---
+
+### `core/` — Game Logic Layer
+Defines the main data structures and algorithms that drive the Sudoku logic.
+
+- **`Cell`** – Represents a single cell in the Sudoku grid.
+- **`Board`** – Manages the 9×9 grid, rules, and interactions between cells.
+- **`Move`** – Tracks user actions for undo/redo operations.
+- **`SudokuGenerator`** – Creates Sudoku puzzles at different difficulty levels.
+
+---
+
+### `frame/` — Main Application Window
+- **`SudokuFrame`** – The central game window, managing layout and transitions between panels.
+
+---
+
+### `panels/` — UI Components
+Encapsulates modular Swing panels representing different parts of the user interface.
+
+- **`BoardPanel`** – Displays and manages the Sudoku grid.
+- **`LevelPanel`** – Handles difficulty selection.
+- **`MenuPanel`** – Main menu interface for starting or resuming games.
+- **`OperatorsPanel`** – Provides operational controls (undo, redo, hint, etc.).
+
+---
+
+### `buttons/` — Custom Buttons
+Contains reusable, styled button classes for consistent interaction design.
+
+- **`DifficultyButton`** – Buttons for selecting difficulty levels.
+- **`OperationsButton`** – Handles game-related actions like check, clear, or new puzzle.
+
+---
+
+### `io/` — Save & Load System
+- **`SaveNLoad`** – Handles serialization and deserialization of the game board in JSON format.
+
+---
+
+### `listener/` — Event Handling
+- **`BoardChangeListener`** – Custom interface to track board updates and trigger UI refreshes.
+
+---
+
+### `app/` — Application Entry Point
+- **`App`** – The main launcher class that initializes and runs the Sudoku game.
