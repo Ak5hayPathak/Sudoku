@@ -1,4 +1,4 @@
-package com.sudoku.utilities;
+package com.sudoku.core;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -23,40 +23,39 @@ public class Cell {
         this.wrong = false;
     }
 
-    // --- Value ---
+    // Value
     public int getValue() { return value; }
     public void setValue(int value) {
         this.value = value;
         if (value != 0) candidates.clear(); // Clear notes when a number is set
     }
 
-    // --- Fixed ---
+    // Fixed
     public boolean isFixed() { return fixed; }
     public void setFixed(boolean fixed) { this.fixed = fixed; }
 
-    // --- Certain ---
+    // Certain
     public boolean isCertain() { return certain; }
     public void setCertain(boolean certain) { this.certain = certain; }
 
-    // --- Guessed ---
+    // Guessed
     public boolean isGuessed() { return guessed; }
     public void setGuessed(boolean guessed) { this.guessed = guessed; }
 
-    // --- Wrong ---
+    // Wrong
     public boolean isWrong() { return wrong; }
     public void setWrong(boolean wrong) { this.wrong = wrong; }
 
-    // --- Candidates / Notes ---
+    // Candidates/Notes
     public Set<Integer> getCandidates() { return candidates; }
     public int getCandidate(int n){
         List<Integer> list = new ArrayList<>(candidates);
         return list.get(n);  // Access by index}
     }
-
     public void addCandidate(int n) { if (n >= 1 && n <= 9) candidates.add(n); }
     public void removeCandidate(int n) { candidates.remove(n); }
     public void clearCandidates() { candidates.clear(); }
 
-    // --- Helper ---
+    // Helper
     public boolean hasCandidates() { return !candidates.isEmpty(); }
 }

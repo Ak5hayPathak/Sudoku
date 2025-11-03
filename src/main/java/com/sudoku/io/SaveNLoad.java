@@ -1,5 +1,7 @@
-package com.sudoku.utilities;
+package com.sudoku.io;
 
+import com.sudoku.core.Board;
+import com.sudoku.core.Cell;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import javax.swing.*;
@@ -8,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 
 public class SaveNLoad {
 
-    // === SAVE GAME ===
+    // SAVE GAME
     public static void saveGameToJSON(Board board, String difficulty,
                                       boolean isCompleted, int timeElapsed,
                                       int hints, int validations, boolean solveHelp) {
@@ -67,7 +69,7 @@ public class SaveNLoad {
         }
     }
 
-    // === LOAD GAME ===
+    //LOAD GAME
     public static JSONObject loadGameFromJSON() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Load Sudoku Game");

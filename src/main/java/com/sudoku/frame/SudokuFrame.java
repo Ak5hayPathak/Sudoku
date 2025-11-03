@@ -4,7 +4,7 @@ import com.sudoku.panels.BoardPanel;
 import com.sudoku.panels.LevelPanel;
 import com.sudoku.panels.MenuPanel;
 import com.sudoku.panels.OperatorsPanel;
-import com.sudoku.utilities.Board;
+import com.sudoku.core.Board;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,8 +12,6 @@ import java.awt.*;
 public class SudokuFrame extends JFrame {
 
     private Board board;
-    private Board restartBoard;
-    private Board solvedBoard;
 
     public SudokuFrame() {
         setTitle("Sudoku");
@@ -36,7 +34,7 @@ public class SudokuFrame extends JFrame {
         setIconImage(icon.getImage());
 
         BoardPanel boardPanel = new BoardPanel(width, height);
-        BoardPanel boardPanel2 = new BoardPanel(width, height);
+        BoardPanel pausedboardPanel = new BoardPanel(width, height); //Is visible when the main Board is set visible to none
 
         OperatorsPanel operatorsPanel = new OperatorsPanel(this, width, height, boardPanel);
         LevelPanel levelPanel = new LevelPanel(width, height, boardPanel, operatorsPanel);
@@ -46,7 +44,7 @@ public class SudokuFrame extends JFrame {
         add(levelPanel);
         add(menuPanel);
         add(boardPanel);
-        add(boardPanel2);
+        add(pausedboardPanel);
         add(operatorsPanel);
 
         setVisible(true);

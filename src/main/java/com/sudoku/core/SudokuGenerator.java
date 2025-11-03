@@ -1,4 +1,4 @@
-package com.sudoku.utilities;
+package com.sudoku.core;
 
 import java.util.*;
 
@@ -65,7 +65,7 @@ public final class SudokuGenerator {
 
     private static Board generateTerminalPattern(int maxAttempts, int timeLimitMillis) {
 
-        Board board = new Board();
+        Board board;
 
         for (int attempts = 1; attempts <= maxAttempts; attempts++) {
             board = randomFill();
@@ -136,7 +136,6 @@ public final class SudokuGenerator {
                 if(board.getCell(i, j).getValue() != 0) rowCount++;
                 if(board.getCell(j, i).getValue() != 0) colCount++;
             }
-
 
             if (rowCount < minRowCol || colCount < minRowCol)
                 return false;

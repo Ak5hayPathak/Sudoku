@@ -1,8 +1,8 @@
 package com.sudoku.panels;
 
-import com.sudoku.utilities.Board;
+import com.sudoku.core.Board;
 import com.sudoku.buttons.DifficultyButton;
-import com.sudoku.utilities.SudokuGenerator;
+import com.sudoku.core.SudokuGenerator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,9 +27,15 @@ public class LevelPanel extends JPanel {
         this.boardPanel = boardPanel;
 
         // Set size dynamically based on frame size
-        int width = (int) (frameWidth * 0.19);   // 19% of frame width
-        int height = (int) (frameHeight * 0.908); //91% of frame height
-        setBounds(10, 10, width, height);        // x, y, width, height
+        int width = (int) (frameWidth * 0.19);    // 19% of frame width
+        int height = (int) (frameHeight * 0.908); // 90.8% of frame height
+
+        // Set position dynamically based on frame size
+        int x = (int) (frameWidth * 0.01);
+        int y = (int) (frameHeight * 0.014);
+
+        setBounds(x, y, width, height);
+
 
         // Creates a list to store all buttons for toggling
         java.util.List<DifficultyButton> buttonList = new java.util.ArrayList<>();
@@ -41,8 +47,8 @@ public class LevelPanel extends JPanel {
         // Load star icon once
         starIcon = new ImageIcon(getClass().getResource("/Icons/star.png"));
 
-        int spacing = 10;
-        int currentY = 20;
+        int spacing = (int) (height * 0.015);
+        int currentY = (int) (height * 0.03);
 
         for (int i = 0; i < difficulties.length; i++) {
             leftIcon = new ImageIcon(getClass().getResource("/Icons/" + leftIcons[i]));
@@ -51,21 +57,65 @@ public class LevelPanel extends JPanel {
 
             int finalI = i;
             difficultyButtons[i].addActionListener(e -> {
+                // Prevent double-clicks or re-entry
+                if (!difficultyButtons[finalI].isEnabled()) return;
+
+                // 1. Deactivate and disable all buttons
                 for (DifficultyButton b : buttonList) {
-                    b.setActive(false); // deactivate all buttons
+                    b.setActive(false);
+                    b.setEnabled(false);
                 }
-                difficultyButtons[finalI].setActive(true); // activate clicked button
-                board = SudokuGenerator.generate(mapDifficulty(difficultyName), SudokuGenerator.DiggingSequence.RANDOM);
-                boardPanel.setBoard(board);
 
-                operatorsPanel.clearCountValidations();;
-                operatorsPanel.clearCountHints();
-                operatorsPanel.clearSolved();
-                MenuPanel.resetTimer();
+                // 2. Activate the clicked button
+                difficultyButtons[finalI].setActive(true);
 
-                boardPanel.setVisible(true);
-                boardPanel.repaint();
+                // 3. Run Sudoku generation in the background
+                SwingWorker<Board, Void> worker = new SwingWorker<>() {
+                    @Override
+                    protected Board doInBackground() {
+                        return SudokuGenerator.generate(
+                                mapDifficulty(difficultyName),
+                                SudokuGenerator.DiggingSequence.RANDOM
+                        );
+                    }
 
+                    @Override
+                    protected void done() {
+                        try {
+                            board = get(); // safely get result
+                            boardPanel.setBoard(board);
+
+                            // Reset UI states
+                            operatorsPanel.clearCountValidations();
+                            operatorsPanel.clearCountHints();
+                            operatorsPanel.clearSolved();
+                            MenuPanel.resetTimer();
+
+                            // Ensure board panel is visible and refreshed
+                            if (!boardPanel.isVisible()) boardPanel.setVisible(true);
+                            boardPanel.repaint();
+
+                        } catch (Exception ex) {
+                            JOptionPane.showMessageDialog(
+                                    null,
+                                    "Error generating Sudoku: " + ex.getMessage(),
+                                    "Generation Error",
+                                    JOptionPane.ERROR_MESSAGE
+                            );
+                            ex.printStackTrace();
+
+                        } finally {
+                            // 4. Re-enable all buttons except the currently active one
+                            for (DifficultyButton b : buttonList)
+                                b.setEnabled(true);
+
+                            difficultyButtons[finalI].setEnabled(false);
+
+                        }
+                    }
+                };
+
+                worker.execute();
             });
 
             difficultyButtons[i].setRelativeBounds(width, height, 0.95, 0.07, currentY);

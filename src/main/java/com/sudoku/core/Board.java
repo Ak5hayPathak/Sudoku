@@ -1,4 +1,4 @@
-package com.sudoku.utilities;
+package com.sudoku.core;
 
 import java.util.Random;
 
@@ -38,7 +38,7 @@ public class Board {
         }
     }
     public Cell getCell(int i, int j){
-        return grid[i][j];
+        return this.grid[i][j];
     }
 
     public void setCell(int i, int j, Cell cell){
@@ -219,22 +219,6 @@ public class Board {
                 grid[i][j] = new Cell(0, false);
             }
         }
-    }
-
-    public int[] getNumCountArray(){
-        int count=0;
-        for(int num = 1; num<10; num++){
-            for(int i=0; i<9; i++){
-                for(int j=0; j<9; j++){
-                    if(grid[i][j].getValue() == num){
-                        count++;
-                    }
-                }
-            }
-            getNumCount[num-1] = count;
-            count=0;
-        }
-        return getNumCount;
     }
 
     public int getNumCount(int num){

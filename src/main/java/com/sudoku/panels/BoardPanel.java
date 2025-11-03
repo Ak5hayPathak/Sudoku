@@ -1,8 +1,9 @@
 package com.sudoku.panels;
 
-import com.sudoku.utilities.Board;
-import com.sudoku.utilities.Cell;
-import com.sudoku.utilities.Move;
+import com.sudoku.core.Board;
+import com.sudoku.core.Cell;
+import com.sudoku.core.Move;
+import com.sudoku.listener.BoardChangeListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +16,9 @@ public class BoardPanel extends JPanel {
     private int cornerRadius = 10;
     private boolean isNotes;
     private BoardChangeListener listener;
+
+    private int panelWidth;
+    private int panelHeight;
 
     private Board board = new Board();
     private Board solvedBoard;
@@ -30,9 +34,14 @@ public class BoardPanel extends JPanel {
         setLayout(null);
         setOpaque(false);
 
-        int width = (int) (frameWidth * 0.57);
-        int height = (int) (frameHeight * 0.80);
-        setBounds(222, 81, width, height);
+        this.panelWidth = (int) (frameWidth * 0.57);
+        this.panelHeight = (int) (frameHeight * 0.80);
+
+        // Position relative to panel dimensions
+        int x = (int) (frameWidth * 0.203);   // Example: 39% of panel width
+        int y = (int) (frameHeight * 0.122);  // Example: 10% of panel height
+
+        setBounds(x, y, panelWidth, panelHeight);
 
         setFocusable(true);
 
@@ -200,33 +209,47 @@ public class BoardPanel extends JPanel {
         redoStack.clear();
     }
 
-    /** Determines which cell was clicked */
+    public void refreshPanel(){
+        selectedCol = -1;
+        selectedRow = -1;
+        repaint();
+    }
+
     private void locateSelectedCell(int x, int y) {
-        int w = getWidth();
-        int h = getHeight();
-        int padding = 20, topOffset = 10;
-        int gridX = padding + 10;
+        int w = this.panelWidth;
+        int h = this.panelHeight;
+
+        // Make constants relative to panel size
+        int padding = (int) (w * 0.03);      // ~3% of width
+        int topOffset = (int) (h * 0.012);   // ~1.2% of height
+        int innerGap = (int) (w * 0.008);    // replaces the "+10" constant
+
+        // Compute grid boundaries and cell sizes
+        int gridX = padding + innerGap;
         int gridY = padding + topOffset;
         int gridWidth = w - 3 * padding;
         int gridHeight = h - 2 * padding;
+
         double cellWidth = (double) gridWidth / SIZE;
         double cellHeight = (double) gridHeight / SIZE;
 
+        // Check if (x, y) is within grid boundaries
         if (x < gridX || x > gridX + gridWidth || y < gridY || y > gridY + gridHeight) {
             selectedRow = selectedCol = -1;
             return;
         }
 
-        selectedCol = (int) ( (x - gridX) / cellWidth);
+        // Determine which cell is selected
+        selectedCol = (int) ((x - gridX) / cellWidth);
         selectedRow = (int) ((y - gridY) / cellHeight);
 
+        // Notify listener
         if (listener != null && selectedRow != -1 && selectedCol != -1) {
             listener.onCellSelected(selectedRow, selectedCol);
         }
-
     }
 
-    @Override
+
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (board == null) return;
@@ -234,19 +257,26 @@ public class BoardPanel extends JPanel {
         Graphics2D g2 = (Graphics2D) g.create();
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        int w = getWidth();
-        int h = getHeight();
+        int w = this.panelWidth;
+        int h = this.panelHeight;
+
+        // --- Scaled constants (based on 624x535 reference panel) ---
+        int padding = (int) (w * 0.032);         // ≈20px originally
+        int gridOffset = (int) (w * 0.016);      // ≈10px originally
+        float thinStroke = (float) (w * 0.0016); // ≈1px originally
+        float thickStroke = (float) (w * 0.0032);// ≈2px originally
+        int cornerRadius = (int) (w * 0.022);    // ≈14px originally
+        int fontYOffset = (int) (h * 0.0056);    // ≈3px originally
 
         // --- Panel Background ---
         g2.setColor(getBackground());
         g2.fillRoundRect(0, 0, w, h, cornerRadius, cornerRadius);
         g2.setColor(new Color(0xDBDBDB));
-        g2.setStroke(new BasicStroke(2));
+        g2.setStroke(new BasicStroke(thickStroke));
         g2.drawRoundRect(0, 0, w - 1, h - 1, cornerRadius, cornerRadius);
 
         // --- Grid Configuration ---
-        int padding = 20;
-        int gridX = padding + 10;
+        int gridX = padding + gridOffset;
         int gridY = padding;
         int gridWidth = w - 3 * padding;
         int gridHeight = h - 2 * padding;
@@ -257,10 +287,8 @@ public class BoardPanel extends JPanel {
         if (selectedRow != -1 && selectedCol != -1) {
             int selectedValue = board.getCell(selectedRow, selectedCol).getValue();
 
-            // Soft overall highlight layer
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.6f));
 
-            // Highlight 3×3 Box
             int boxRow = (selectedRow / 3) * 3;
             int boxCol = (selectedCol / 3) * 3;
             int boxX = (int) Math.round(gridX + boxCol * cellWidth);
@@ -271,17 +299,15 @@ public class BoardPanel extends JPanel {
             g2.setColor(new Color(0xEAF3FC));
             g2.fillRect(boxX, boxY, boxW, boxH);
 
-            // Highlight Row & Column
             int rowY = (int) Math.round(gridY + selectedRow * cellHeight);
             int colX = (int) Math.round(gridX + selectedCol * cellWidth);
             int rowH = (int) Math.round(gridY + (selectedRow + 1) * cellHeight) - rowY;
             int colW = (int) Math.round(gridX + (selectedCol + 1) * cellWidth) - colX;
 
             g2.setColor(new Color(0xE3EBF3));
-            g2.fillRect(gridX, rowY, gridWidth, rowH);        // row highlight
-            g2.fillRect(colX, gridY, colW, gridHeight);      // column highlight
+            g2.fillRect(gridX, rowY, gridWidth, rowH);
+            g2.fillRect(colX, gridY, colW, gridHeight);
 
-            // Highlight same numbers
             if (selectedValue != 0) {
                 g2.setColor(new Color(0xC3D7EA));
                 for (int r = 0; r < SIZE; r++) {
@@ -297,7 +323,6 @@ public class BoardPanel extends JPanel {
                 }
             }
 
-            // Selected Cell (stronger blue)
             g2.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
             int selX = (int) Math.round(gridX + selectedCol * cellWidth);
             int selY = (int) Math.round(gridY + selectedRow * cellHeight);
@@ -308,10 +333,9 @@ public class BoardPanel extends JPanel {
             g2.fillRect(selX, selY, selW, selH);
         }
 
-
         // --- Grid Lines ---
         g2.setColor(new Color(0xB4B4B4));
-        g2.setStroke(new BasicStroke(1f));
+        g2.setStroke(new BasicStroke(thinStroke));
         for (int i = 1; i < SIZE; i++) {
             int x = (int) Math.round(gridX + i * cellWidth);
             int y = (int) Math.round(gridY + i * cellHeight);
@@ -321,10 +345,10 @@ public class BoardPanel extends JPanel {
             }
         }
 
-        // --- Block Borders (Thicker Blue Lines) ---
+        // --- Block Borders ---
         g2.setColor(new Color(0x0658AE));
-        g2.setStroke(new BasicStroke(2f));
-        g2.drawRoundRect(gridX, gridY, gridWidth - 1, gridHeight - 1, 14, 14);
+        g2.setStroke(new BasicStroke(thickStroke));
+        g2.drawRoundRect(gridX, gridY, gridWidth - 1, gridHeight - 1, cornerRadius, cornerRadius);
         for (int i = 3; i < SIZE; i += 3) {
             int x = (int) Math.round(gridX + i * cellWidth);
             int y = (int) Math.round(gridY + i * cellHeight);
@@ -343,7 +367,6 @@ public class BoardPanel extends JPanel {
                 int ch = (int) Math.round(cellHeight);
 
                 if (isNotes && cell.hasCandidates()) {
-                    // Draw candidate numbers (notes)
                     int noteSize = (int) (ch * 0.25);
                     g2.setFont(new Font("Roboto", Font.PLAIN, noteSize));
                     g2.setColor(Color.BLACK);
@@ -373,7 +396,6 @@ public class BoardPanel extends JPanel {
                         }
                     }
                 } else if (value != 0) {
-                    // Draw main number
                     int fontSize = (int) (ch * 0.52);
                     g2.setFont(new Font("Roboto", Font.PLAIN, fontSize));
 
@@ -382,21 +404,17 @@ public class BoardPanel extends JPanel {
                     int textWidth = fm.stringWidth(text);
                     int textHeight = fm.getAscent();
                     int textX = x1 + (cw - textWidth) / 2;
-                    int textY = y1 + (ch + textHeight) / 2 - 3;
+                    int textY = y1 + (ch + textHeight) / 2 - fontYOffset;
 
-                    Color numColor = null;
-                    if(cell.isFixed()){
+                    Color numColor;
+                    if (cell.isFixed()) {
                         numColor = Color.BLACK;
-                    }else{
-                        if(board.isCorrect(row, col)){
-                            if(cell.isGuessed()){
-                                numColor = new Color(0xE6AB01);
-                            }else if(cell.isCertain()){
-                                numColor = new Color(0x00C417);
-                            }else{
-                                numColor = new Color(0x1E88E5);
-                            }
-                        }else{
+                    } else {
+                        if (board.isCorrect(row, col)) {
+                            if (cell.isGuessed()) numColor = new Color(0xE6AB01);
+                            else if (cell.isCertain()) numColor = new Color(0x00C417);
+                            else numColor = new Color(0x1E88E5);
+                        } else {
                             numColor = new Color(0xFF7171);
                         }
                     }
@@ -409,5 +427,6 @@ public class BoardPanel extends JPanel {
 
         g2.dispose();
     }
+
 
 }

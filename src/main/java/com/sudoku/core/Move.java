@@ -1,10 +1,10 @@
-package com.sudoku.utilities;
+package com.sudoku.core;
 
 public class Move {
     private int row;
     private int col;
-    private Cell oldCell; // deep copy of the cell before the move
-    private Cell newCell; // optional: deep copy after the move for redo
+    private Cell oldCell; //data of the old cell
+    private Cell newCell; // deep copy after the move for redo
 
     public Move(int row, int col, Cell oldCell, Cell newCell) {
         this.row = row;
@@ -13,13 +13,13 @@ public class Move {
         this.newCell = newCell != null ? copyCell(newCell) : null;
     }
 
-    // --- Getters ---
+    // Getters
     public int getRow() { return row; }
     public int getCol() { return col; }
     public Cell getOldCell() { return oldCell; }
     public Cell getNewCell() { return newCell; }
 
-    // --- Utility: deep copy method ---
+    // deep copy method
     public static Cell copyCell(Cell cell) {
         Cell copy = new Cell(cell.getValue(), cell.isFixed());
         copy.setCertain(cell.isCertain());

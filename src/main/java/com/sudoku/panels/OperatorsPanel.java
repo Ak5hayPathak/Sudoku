@@ -1,9 +1,10 @@
 package com.sudoku.panels;
 
 import com.sudoku.buttons.OperationsButton;
-import com.sudoku.utilities.Board;
-import com.sudoku.utilities.Cell;
-import com.sudoku.utilities.Move;
+import com.sudoku.core.Board;
+import com.sudoku.core.Cell;
+import com.sudoku.core.Move;
+import com.sudoku.listener.BoardChangeListener;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,6 +31,10 @@ public class OperatorsPanel extends JPanel{
     ImageIcon guessIcon;
     ImageIcon certainIcon;
 
+    // Store base (unscaled) images
+    private Image validateBase, hintBase, notesBase, solveBase;
+    private Image undoBase, redoBase, eraseBase, guessBase, certainBase;
+
     OperationsButton validateButton;
     OperationsButton hintButton;
     OperationsButton notesButton;
@@ -51,58 +56,83 @@ public class OperatorsPanel extends JPanel{
         setLayout(null); // for absolute positioning
         setOpaque(false); // Opaque false for custom painting
 
-        // Set size dynamically based on frame size
-        int width = (int) (frameWidth * 0.20);   // 23% of frame width
-        int height = (int) (frameHeight * 0.80); //91% of frame height
-        setBounds(849, 81, width, height);        // x, y, width, height
+        // Relative sizing of panel
+        int width = (int) (frameWidth * 0.20);
+        int height = (int) (frameHeight * 0.80);
+        int x = (int) (frameWidth * 0.777);
+        int y = (int) (frameHeight * 0.121);
+        setBounds(x, y, width, height);
 
-        validateIcon = new ImageIcon(getClass().getResource("/Icons/validate.png"));
-        hintIcon = new ImageIcon(getClass().getResource("/Icons/hint.png"));
-        notesIcon = new ImageIcon(getClass().getResource("/Icons/notes.png"));
-        solveIcon = new ImageIcon(getClass().getResource("/Icons/solution.png"));
+        // Load base (original) icons once
+        validateBase = new ImageIcon(getClass().getResource("/Icons/validate.png")).getImage();
+        hintBase = new ImageIcon(getClass().getResource("/Icons/hint.png")).getImage();
+        notesBase = new ImageIcon(getClass().getResource("/Icons/notes.png")).getImage();
+        solveBase = new ImageIcon(getClass().getResource("/Icons/solution.png")).getImage();
 
-        validateButton = new OperationsButton("Validate", validateIcon, 16, 2, 4);
-        hintButton = new OperationsButton("Hint", hintIcon, 16, 0, 6);
-        notesButton = new OperationsButton("Notes", notesIcon, 16, 1, 6);
-        solveButton = new OperationsButton("Solution", solveIcon, 16, 1, 0);
+        undoBase = new ImageIcon(getClass().getResource("/Icons/undo.png")).getImage();
+        redoBase = new ImageIcon(getClass().getResource("/Icons/redo.png")).getImage();
+        eraseBase = new ImageIcon(getClass().getResource("/Icons/erase.png")).getImage();
+        guessBase = new ImageIcon(getClass().getResource("/Icons/guess.png")).getImage();
+        certainBase = new ImageIcon(getClass().getResource("/Icons/certain.png")).getImage();
 
-        validateButton.setBounds(20, 40, 180, 40); // x, y, width, height
-        hintButton.setBounds(20, 85, 180, 40); // x, y, width, height
-        notesButton.setBounds(20, 130, 180, 40); // x, y, width, height
-        solveButton.setBounds(20, 175, 180, 40); // x, y, width, height
+        // Create buttons with relative font size
+        validateButton = new OperationsButton("Validate", null, (int)(height * 0.03), 2, 4);
+        hintButton = new OperationsButton("Hint", null, (int)(height * 0.03), 0, 6);
+        notesButton = new OperationsButton("Notes", null, (int)(height * 0.03), 1, 6);
+        solveButton = new OperationsButton("Solution", null, (int)(height * 0.03), 1, 0);
 
+        validateButton.setBounds((int)(width * 0.091), (int)(height * 0.075), (int)(width * 0.82), (int)(height * 0.075));
+        hintButton.setBounds((int)(width * 0.091), (int)(height * 0.159), (int)(width * 0.82), (int)(height * 0.075));
+        notesButton.setBounds((int)(width * 0.091), (int)(height * 0.243), (int)(width * 0.82), (int)(height * 0.075));
+        solveButton.setBounds((int)(width * 0.091), (int)(height * 0.328), (int)(width * 0.82), (int)(height * 0.075));
 
-        for(int i=0; i<9; i++){
-            numbers[i] = new OperationsButton(String.valueOf(i+1), null, 20, 0, 0);
+        add(validateButton);
+        add(hintButton);
+        add(notesButton);
+        add(solveButton);
+
+        // Number buttons
+        for (int i = 0; i < 9; i++) {
+            numbers[i] = new OperationsButton(String.valueOf(i + 1), null, (int)(height * 0.0375), 0, 0);
+            add(numbers[i]);
         }
 
-        numbers[0].setBounds(20, 230, 54, 45);
-        numbers[1].setBounds(82, 230, 54, 45);
-        numbers[2].setBounds(145, 230, 54, 45);
-        numbers[3].setBounds(20, 282, 54, 45);
-        numbers[4].setBounds(82, 282, 54, 45);
-        numbers[5].setBounds(145, 282, 54, 45);
-        numbers[6].setBounds(20, 334, 54, 45);
-        numbers[7].setBounds(82, 334, 54, 45);
-        numbers[8].setBounds(145, 334, 54, 45);
+        int numW = (int)(width * 0.247);
+        int numH = (int)(height * 0.084);
+        int startX = (int)(width * 0.091);
+        int gapY = numH + (int)(height * 0.009);
+        int gapX = (int)(width * 0.05);
+        int baseY = (int)(height * 0.431);
 
-        undoIcon = new ImageIcon(getClass().getResource("/Icons/undo.png"));
-        redoIcon = new ImageIcon(getClass().getResource("/Icons/redo.png"));
-        eraseIcon = new ImageIcon(getClass().getResource("/Icons/erase.png"));
-        guessIcon = new ImageIcon(getClass().getResource("/Icons/guess.png"));
-        certainIcon = new ImageIcon(getClass().getResource("/Icons/certain.png"));
+        for (int row = 0; row < 3; row++) {
+            for (int col = 0; col < 3; col++) {
+                int idx = row * 3 + col;
+                numbers[idx].setBounds(startX + col * (numW + gapX), baseY + row * gapY, numW, numH);
+            }
+        }
 
-        undoButton = new OperationsButton("Undo", undoIcon, 15, 2, 0);
-        redoButton = new OperationsButton("Redo", redoIcon, 15, 2, 0);
-        eraseButton = new OperationsButton("Erase", eraseIcon, 15, 2, 0);
-        guessButton = new OperationsButton(null, null, guessIcon, 25, 25, 0, 0, 0);
-        certainButton = new OperationsButton(null,null, certainIcon, 23, 23, 0, 0, 0);
+        // Bottom operation buttons
+        undoButton = new OperationsButton("Undo", null, (int)(height * 0.028), 2, 0);
+        redoButton = new OperationsButton("Redo", null, (int)(height * 0.028), 2, 0);
+        eraseButton = new OperationsButton("Erase", null, (int)(height * 0.028), 2, 0);
+        guessButton = new OperationsButton(null, null, (int)(width * 0.025), 0, 0);
+        certainButton = new OperationsButton(null, null, (int)(width * 0.023), 0, 0);
 
-        undoButton.setBounds(20, 396, 85, 40); // x, y, width, height
-        redoButton.setBounds(112, 396, 85, 40); // x, y, width, height
-        eraseButton.setBounds(20, 445, 85, 40); // x, y, width, height
-        guessButton.setBounds(112, 445, 40, 40); // x, y, width, height
-        certainButton.setBounds(158, 445, 40, 40); // x, y, width, height
+        undoButton.setBounds((int)(width * 0.091), (int)(height * 0.741), (int)(width * 0.389), (int)(height * 0.075));
+        redoButton.setBounds((int)(width * 0.514), (int)(height * 0.741), (int)(width * 0.389), (int)(height * 0.075));
+        eraseButton.setBounds((int)(width * 0.091), (int)(height * 0.833), (int)(width * 0.389), (int)(height * 0.075));
+        guessButton.setBounds((int)(width * 0.514), (int)(height * 0.833), (int)(width * 0.183), (int)(height * 0.075));
+        certainButton.setBounds((int)(width * 0.721), (int)(height * 0.833), (int)(width * 0.183), (int)(height * 0.075));
+
+        add(undoButton);
+        add(redoButton);
+        add(eraseButton);
+        add(guessButton);
+        add(certainButton);
+
+        // Initial icon scaling
+        resizeIcons(width);
+
 
 
         // Set tooltip with HTML for styling
@@ -215,7 +245,7 @@ public class OperatorsPanel extends JPanel{
                     boolean newState = !notesButton.isActive();
                     notesButton.setActive(newState, new Color(0xDBDBDB));
                     boardPanel.setNotes(newState);
-                    boardPanel.repaint();
+                    boardPanel.refreshPanel();
                 }
             }
         });
@@ -235,6 +265,7 @@ public class OperatorsPanel extends JPanel{
             }
         });
 
+        //numbers
         for (int i = 0; i < 9; i++) {
             int finalI = i;
 
@@ -615,6 +646,25 @@ public class OperatorsPanel extends JPanel{
         dialog.add(buttonPanel, BorderLayout.SOUTH);
 
         dialog.setVisible(true);
+    }
+
+    /** Scale all icons to 10% of current panel width */
+    private void resizeIcons(int panelWidth) {
+        int iconSize = (int) (panelWidth * 0.10);
+
+        validateButton.setIcon(new ImageIcon(validateBase.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)));
+        hintButton.setIcon(new ImageIcon(hintBase.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)));
+        notesButton.setIcon(new ImageIcon(notesBase.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)));
+        solveButton.setIcon(new ImageIcon(solveBase.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)));
+
+        undoButton.setIcon(new ImageIcon(undoBase.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)));
+        redoButton.setIcon(new ImageIcon(redoBase.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)));
+        eraseButton.setIcon(new ImageIcon(eraseBase.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)));
+        guessButton.setIcon(new ImageIcon(guessBase.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)));
+        certainButton.setIcon(new ImageIcon(certainBase.getScaledInstance(iconSize, iconSize, Image.SCALE_SMOOTH)));
+
+        revalidate();
+        repaint();
     }
 
 

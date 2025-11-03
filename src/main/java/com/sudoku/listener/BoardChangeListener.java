@@ -1,6 +1,6 @@
-package com.sudoku.panels;
+package com.sudoku.listener;
 
-interface BoardChangeListener {
+public interface BoardChangeListener {
     /**
      * Called whenever a cell’s value changes
      */

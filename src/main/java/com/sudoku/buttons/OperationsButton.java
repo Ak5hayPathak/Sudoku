@@ -40,7 +40,7 @@ public class OperationsButton extends JButton {
         this.paddingBetweenImageAndText = paddingBetweenImageAndText; //To maintain the spaces between the icon and the text
         this.contentAlignment = contentAlignment; //To maintain the alignment of the icon and the text in the button
 
-        //Scale the icon (e.g., 20x20)
+        //Scale the icon
         if (icon != null) {
             Image img = icon.getImage().getScaledInstance(iconheight, iconWidth, Image.SCALE_SMOOTH);
             setIcon(new ImageIcon(img));
@@ -160,5 +160,4 @@ public class OperationsButton extends JButton {
 
         g2.dispose();
     }
-
 }
