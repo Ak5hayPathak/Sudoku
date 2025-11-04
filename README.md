@@ -7,48 +7,40 @@ The project follows a modular, event-driven architecture with a clear separation
 
 ## Features
 
-- **5 Difficulty Levels** — Generates Sudoku puzzles ranging from *Easy* to *Expert* using custom digging logic.  
-- **Undo / Redo System** — Tracks user moves using the `Move` class to enable reversible actions.  
-- **Dynamic Board Interaction** — Real-time updates and cell validation via event listeners.  
-- **Save & Load Progress** — Stores and retrieves puzzles from JSON files for persistent gameplay.  
-- **Custom Swing UI** — Structured panels (`BoardPanel`, `MenuPanel`, `LevelPanel`, etc.) ensure clean organization.  
-- **Interactive Buttons** — Includes hover and click effects through custom button classes.  
-- **Event-Driven Design** — Implements `BoardChangeListener` to synchronize logic and interface.  
+- **5 Difficulty Levels** — Generates Sudoku puzzles ranging from *Easy* to *Expert* using custom digging logic.
+- **Undo / Redo System** — Tracks user moves using the `Move` class to enable reversible actions.
+- **Dynamic Board Interaction** — Real-time updates and cell validation via event listeners.
+- **Save & Load Progress** — Stores and retrieves puzzles from JSON files for persistent gameplay.
+- **Custom Swing UI** — Structured panels (`BoardPanel`, `MenuPanel`, `LevelPanel`, etc.) ensure clean organization.
+- **Interactive Buttons** — Includes hover and click effects through custom button classes.
+- **Event-Driven Design** — Implements `BoardChangeListener` to synchronize logic and interface.
 - **Separation of Concerns** — Clear distinction between *game logic*, *UI elements*, and *I/O operations*.
 
 ---
 
 ## Project Structure
 
-com.sudoku
-│
-├── app/
-│ └── App.java
-│
-├── core/
-│ ├── Board.java
-│ ├── Cell.java
-│ ├── Move.java
-│ └── SudokuGenerator.java
-│
-├── panels/
-│ ├── BoardPanel.java
-│ ├── LevelPanel.java
-│ ├── MenuPanel.java
-│ └── OperatorsPanel.java
-│
-├── buttons/
-│ ├── DifficultyButton.java
-│ └── OperationsButton.java
-│
-├── io/
-│ └── SaveNLoad.java
-│
-├── listener/
-│ └── BoardChangeListener.java
-│
-└── frame/
-└── SudokuFrame.java
+- com.sudoku
+    - App.java
+    - core
+        - Board.java
+        - Cell.java
+        - Move.java
+        - SudokuGenerator.java
+    - panels
+        - BoardPanel.java
+        - LevelPanel.java
+        - MenuPanel.java
+        - OperatorsPanel.java
+    - buttons
+        - DifficultyButton.java
+        - OperationsButton.java
+    - io
+        - SaveNLoad.java
+    - listener
+        - BoardChangeListener.java
+    - frame
+        - SudokuFrame.java
 
 
 ---
