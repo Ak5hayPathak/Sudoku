@@ -178,8 +178,11 @@ public class BoardPanel extends JPanel {
             int row = lastMove.getRow();
             int col = lastMove.getCol();
 
+            selectedRow = row;
+            selectedCol = col;
             board.setCell(row, col, lastMove.getOldCell()); // Restore the old cell
             redoStack.push(lastMove); // Push this move onto the redo stack
+
             repaint(); // refresh UI if needed
         } else {
             Toolkit.getDefaultToolkit().beep(); // optional feedback
@@ -192,6 +195,8 @@ public class BoardPanel extends JPanel {
             int row = lastUndo.getRow();
             int col = lastUndo.getCol();
 
+            selectedRow = row;
+            selectedCol = col;
             // Restore the new cell
             if (lastUndo.getNewCell() != null) {
                 board.setCell(row, col, lastUndo.getNewCell());

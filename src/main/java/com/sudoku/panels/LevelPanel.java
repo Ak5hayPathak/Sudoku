@@ -36,7 +36,6 @@ public class LevelPanel extends JPanel {
 
         setBounds(x, y, width, height);
 
-
         // Creates a list to store all buttons for toggling
         java.util.List<DifficultyButton> buttonList = new java.util.ArrayList<>();
 
